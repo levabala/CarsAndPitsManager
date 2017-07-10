@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -52,6 +53,7 @@
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -61,6 +63,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\CPManager.cs" />
+    <Compile Include="Classes\CPVisualizer.cs" />
+    <Compile Include="Classes\DataTypes\CPEvent.cs" />
+    <Compile Include="Classes\DataTypes\CPRawData.cs" />
+    <Compile Include="Classes\DataTypes\CPData.cs" />
+    <Compile Include="Classes\DataTypes\CPVector.cs" />
+    <Compile Include="Classes\Net\Net.cs" />
+    <Compile Include="Classes\Net\NetSquare.cs" />
+    <Compile Include="Classes\DataTypes\GeoVector.cs" />
+    <Compile Include="Classes\DataTypes\PointLatLng.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -91,6 +103,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\DataProcessors\" />
+    <Folder Include="Classes\Other\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

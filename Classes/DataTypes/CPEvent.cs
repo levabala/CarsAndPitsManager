@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF2.Classes.DataTypes
 {
-    struct CPEvent
+    class CPEvent
     {
         public readonly string Who;
         public readonly CPEventType What;
@@ -27,6 +27,6 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
 
     enum CPEventType
     {
-
-    }
+        
+    } 
 }

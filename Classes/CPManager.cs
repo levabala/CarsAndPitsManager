@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF2.Classes
 {
-    class CPController
+    class CPManager
     {
     }
 }

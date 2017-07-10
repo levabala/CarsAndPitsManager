@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarsAndPitsWPF2.Classes.DataTypes
+namespace CarsAndPitsWPF2.Classes.DataProcessors
 {
-    class CPRawDataGeo
+    class RawDataProcess
     {
     }
 }
