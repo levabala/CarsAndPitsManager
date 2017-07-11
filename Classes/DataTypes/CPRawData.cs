@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF2.Classes.DataTypes
 {
-    class CPRawData
+    public class CPRawData
     {
         public long startTime;
         public string deviceId;
@@ -82,7 +82,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         }
     }
 
-    struct DataTuplya
+    public struct DataTuplya
     {
         public int timeOffset;
         public double[] values;

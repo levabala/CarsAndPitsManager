@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF2.Classes.Nets
 {
-    class NetSquare
+    public class NetSquare
     {
         public readonly int level;
         public readonly double lat;
@@ -15,8 +15,7 @@ namespace CarsAndPitsWPF2.Classes.Nets
         public readonly int[] path;
 
         public double intensity;
-        public NetSquare[] children;
-        public List<CPVector> vectors = new List<CPVector>();
+        public NetSquare[] children;        
 
         public NetSquare(double lat, double lng, int level, double intensity)
         {
@@ -41,6 +40,39 @@ namespace CarsAndPitsWPF2.Classes.Nets
             path[path.Length - 1] = index;
 
             this.intensity = intensity;
+        }                
+    }
+
+    public class NetSquareCPData : NetSquare
+    {
+        //device-id -> sensor -> sequence
+        public Dictionary<string, Dictionary<SensorType, CPDataSequence>> data
+            = new Dictionary<string, Dictionary<SensorType, CPDataSequence>>();
+
+        public NetSquareCPData(double lat, double lng, int level, double intensity)
+            : base(lat, lng, level, intensity) { }
+        public NetSquareCPData(NetSquare parent, int index, double intensity)
+            : base(parent, index, intensity) { }
+
+        public void putData(CPRawData rawData)
+        {
+            if (!data.ContainsKey(rawData.deviceId))
+            {
+                Dictionary<SensorType, CPDataSequence> dictionary = new Dictionary<SensorType, CPDataSequence>()
+                {
+                    { rawData.sensor, new CPDataSequence(rawData.sensor, rawData.startTime) }
+                };
+                data.Add(rawData.deviceId, dictionary);
+            }
+            else if (!data[rawData.deviceId].ContainsKey(rawData.sensor))
+                data[rawData.deviceId].Add(rawData.sensor, new CPDataSequence(rawData.sensor, rawData.startTime));
+
+            CPDataSequence sequense = data[rawData.deviceId][rawData.sensor];
+            CPVector[] vectors = CPVector.fromArray(rawData.data);
+            Parallel.ForEach(vectors, vector =>
+            {
+                //sequense.addVector(vector, )
+            });
         }        
     }
 }

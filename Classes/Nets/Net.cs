@@ -40,10 +40,10 @@ namespace CarsAndPitsWPF2.Classes.Nets
             totalValuesContains++;
         }
 
-        public List<CPVector> getVectors(double lat, double lng)
+        /*public List<CPVector> getVectors(double lat, double lng)
         {
             return getSquare(lat, lng).vectors;
-        }
+        }*/
 
         public void putToSquareTree(double lat, double lng, CPVector vector)
         {
@@ -63,7 +63,7 @@ namespace CarsAndPitsWPF2.Classes.Nets
                 NetSquare.intensity += vector.length;
             }
 
-            NetSquare.vectors.Add(vector);
+            //NetSquare.vectors.Add(vector);
         }
 
         //GetSquare functions

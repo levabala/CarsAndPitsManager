@@ -91,7 +91,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
 
         private Sequence currSequence;
 
-        public CPDataSequence(SensorType sensorType, long startTime, double maxDeviationPerc)
+        public CPDataSequence(SensorType sensorType, long startTime, double maxDeviationPerc = 0.4)
         {
             this.sensorType = sensorType;
             this.startTime = startTime;
@@ -177,8 +177,8 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         }
 
         public int getVectorIndex(long absoluteTime)
-        {
-            if (absoluteTime < getAbsoluteTime(0) || absoluteTime > getAbsoluteTime(vectors.Count - 1))
+        {            
+            if (absoluteTime < startTime || absoluteTime > endTime)
                 return -1;
 
             CPVector centerVector = vectors[0];
@@ -205,7 +205,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             long minDelta = Math.Abs(absoluteTime - getAbsoluteTime(startIndex));
             int minIndex = startIndex;
 
-            for (int i = startIndex + 1; i < endIndex; i++)
+            for (int i = startIndex + 1; i <= endIndex; i++)
             {
                 long delta = Math.Abs(absoluteTime - getAbsoluteTime(i));
                 long a = getAbsoluteTime(6);

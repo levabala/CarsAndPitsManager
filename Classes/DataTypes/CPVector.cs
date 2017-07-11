@@ -8,19 +8,27 @@ using System.Threading.Tasks;
 namespace CarsAndPitsWPF2.Classes.DataTypes
 {
     public struct CPVector
-    {
-        public PointLatLng coordinate;        
+    {        
         public double X, Y, Z;
         public double length;        
 
-        public CPVector(PointLatLng coordinate, double X, double Y, double Z)
-        {
-            this.coordinate = coordinate;            
+        public CPVector(double X, double Y, double Z)
+        {            
             this.X = X;
             this.Y = Y;
             this.Z = Z;
 
             length = Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
+        }
+
+        public static CPVector[] fromArray(DataTuplya[] array)
+        {
+            CPVector[] output = new CPVector[array.Length];
+            Parallel.For(0, array.Length-1, i =>
+            {
+                output[i] = new CPVector(array[i].values[0], array[i].values[1], array[i].values[2]);
+            });
+            return output;
         }
     }
 
