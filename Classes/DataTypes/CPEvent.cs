@@ -1,4 +1,4 @@
-﻿using CarsAndPitsWPF2.Classes.Other;
+﻿using CarsAndPitsWPF2.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

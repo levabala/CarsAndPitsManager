@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarsAndPitsWPF2.Classes.Other
+namespace CarsAndPitsWPF2.Classes.DataTypes
 {
-    struct PointLatLng
+    public struct PointLatLng
     {
         public double Lat, Lng;
 
