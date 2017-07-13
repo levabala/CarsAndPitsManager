@@ -68,13 +68,11 @@
     <Compile Include="Classes\DataProcessors\RawDataGetter.cs" />
     <Compile Include="Classes\DataTypes\CPDataSequence.cs" />
     <Compile Include="Classes\DataTypes\CPRawDataGeo.cs" />
-    <Compile Include="Classes\DataTypes\CPEvent.cs" />
     <Compile Include="Classes\DataTypes\CPRawData.cs" />
     <Compile Include="Classes\DataTypes\CPVector.cs" />
     <Compile Include="Classes\Nets\Net.cs" />
     <Compile Include="Classes\Nets\NetSquare.cs" />
-    <Compile Include="Classes\DataTypes\GeoVector.cs" />
-    <Compile Include="Classes\DataTypes\PointLatLng.cs" />
+    <Compile Include="Classes\DataTypes\PointGeo.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

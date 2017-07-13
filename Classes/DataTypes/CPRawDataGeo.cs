@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF2.Classes.DataTypes
 {
-    class CPRawDataGeo
+    public class CPRawDataGeo
     {
         public long startTime;
-        public string deviceId;        
+        public string deviceId;
+        public double totalValueAbs;
         public SensorType sensor;
         public DataTuplyaGeo[] geoData;
 
@@ -18,12 +19,16 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         {
             startTime = sensorCPRawData.startTime;
             deviceId = sensorCPRawData.deviceId;
+            totalValueAbs = sensorCPRawData.totalValueAbs;
+            sensor = sensorCPRawData.sensor;
 
             List<DataTuplyaGeo> geoData = new List<DataTuplyaGeo>();            
             int sensorIndex = 0;
             for (int i = 1; i < geoCPRawData.data.Length; i++)
             {
-                while(sensorCPRawData.data[sensorIndex].timeOffset <= geoCPRawData.data[i].timeOffset)
+                while(
+                    sensorCPRawData.data[sensorIndex].timeOffset <= geoCPRawData.data[i].timeOffset &&
+                    sensorIndex < sensorCPRawData.data.Length-1)
                 {
                     double sLat = geoCPRawData.data[i - 1].values[0];
                     int sTime = geoCPRawData.data[i - 1].timeOffset;
@@ -51,16 +56,13 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         }
     }
 
-    struct DataTuplyaGeo
-    {
-        public int timeOffset;
-        public double[] values;
+    public class DataTuplyaGeo : DataTuplya
+    {        
         public GeoCoordinate coordinate;
 
         public DataTuplyaGeo(int timeOffset, double[] values, GeoCoordinate coordinate)
-        {
-            this.timeOffset = timeOffset;
-            this.values = values;
+            :base(timeOffset, values)
+        {            
             this.coordinate = coordinate;
         }
     }

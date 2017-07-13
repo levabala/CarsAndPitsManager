@@ -41,22 +41,11 @@ namespace CarsAndPitsWPF2.Classes.Nets
             totalValuesContains++;
         }
 
-        /*public List<CPVector> getVectors(double lat, double lng)
-        {
-            return getSquare(lat, lng).vectors;
-        }*/
-
         private void putToSquareTree(double lat, double lng, 
             CPVectorAbs vectorAbs, string deviceId, SensorType sensor)
         {
             putAndGetBottomSquare(lat, lng, vectorAbs.length).putData(vectorAbs, deviceId, sensor);
         }
-
-        /*public void putToSquareTree(double lat, double lng,
-            CPRawData data)
-        {
-            
-        }*/
 
         private NetSquareCPData putAndGetBottomSquare(double lat, double lng, double intensityAdd)
         {
@@ -100,16 +89,16 @@ namespace CarsAndPitsWPF2.Classes.Nets
             return new NetSquare(s, index, s.intensity);
         }
 
-        public NetSquare getSquare(double lat, double lng)
+        public NetSquareCPData getSquare(double lat, double lng)
         {
-            NetSquare NetSquare = zeroSquare;
+            NetSquare netSquare = zeroSquare;
 
             int[] path = getPathToSquare(lat, lng);
             foreach (int i in path)
-                if (NetSquare.children[i] == null) return NetSquare;
-                else NetSquare = NetSquare.children[i];
+                if (netSquare.children[i] == null) return (NetSquareCPData)netSquare;
+                else netSquare = netSquare.children[i];
 
-            return NetSquare;
+            return (NetSquareCPData)netSquare;
         }
 
         public NetSquare getSquare(int[] path)

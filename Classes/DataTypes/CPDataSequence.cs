@@ -127,7 +127,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             endTime = currSequence.endTime;
         }
         
-        public CPVector? getVector(long absoluteTime)
+        public CPVector getVector(long absoluteTime)
         {
             int seqIndex = getSeqIndex(absoluteTime);
             if (seqIndex == -1)
@@ -177,7 +177,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             addVector = addInitialVector;
         }
 
-        public CPVector? getVector(long absoluteTime)
+        public CPVector getVector(long absoluteTime)
         {
             int index = getVectorIndex(absoluteTime);
 

@@ -13,7 +13,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
     {
         public long startTime;
         public string deviceId;
-        public double totalValue;
+        public double totalValueAbs;
         public DataTuplya[] data;
         public SensorType sensor;
 
@@ -23,7 +23,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             this.deviceId = deviceId;
             this.data = data;
             this.sensor = sensor;
-            totalValue = 0;
+            totalValueAbs = 0;
         }
 
         public CPRawData(string path)
@@ -63,7 +63,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
                     {
                         double value = double.Parse(str[ii]);
                         values.Add(value);
-                        totalValue += Math.Abs(value);
+                        totalValueAbs += Math.Abs(value);
                     }
                 }
                 data[i - 2] = new DataTuplya(time, values.ToArray());
@@ -89,7 +89,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         }
     }
 
-    public struct DataTuplya
+    public class DataTuplya
     {
         public int timeOffset;
         public double[] values;
