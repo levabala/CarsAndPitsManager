@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace CarsAndPitsWPF2.Classes.Nets
 {
-    class Net
+    public class Net
     {
         public readonly int maxDepth;
         public readonly double accuracy; //in meters 
@@ -21,7 +21,7 @@ namespace CarsAndPitsWPF2.Classes.Nets
         private NetSquare lastUpperSquare;
         private NetSquare[] squaresCache;
 
-        public Net(int maxDepth)
+        public Net(int maxDepth = 25)
         {
             this.maxDepth = maxDepth;
 
@@ -34,9 +34,10 @@ namespace CarsAndPitsWPF2.Classes.Nets
             totalValuesContains = 0;
         }
 
-        public void putVector(double lat, double lng, CPVector vector)
+        public void putVector(double lat, double lng,
+            CPVectorAbs vectorAbs, string deviceId, SensorType sensor)
         {
-            putToSquareTree(lat, lng, vector);            
+            putToSquareTree(lat, lng, vectorAbs, deviceId, sensor);            
             totalValuesContains++;
         }
 
@@ -45,25 +46,52 @@ namespace CarsAndPitsWPF2.Classes.Nets
             return getSquare(lat, lng).vectors;
         }*/
 
-        public void putToSquareTree(double lat, double lng, CPVector vector)
+        private void putToSquareTree(double lat, double lng, 
+            CPVectorAbs vectorAbs, string deviceId, SensorType sensor)
         {
-            NetSquare NetSquare = zeroSquare;
-            zeroSquare.intensity += vector.length;
+            putAndGetBottomSquare(lat, lng, vectorAbs.length).putData(vectorAbs, deviceId, sensor);
+        }
+
+        /*public void putToSquareTree(double lat, double lng,
+            CPRawData data)
+        {
+            
+        }*/
+
+        private NetSquareCPData putAndGetBottomSquare(double lat, double lng, double intensityAdd)
+        {
+            NetSquare netSquare = zeroSquare;
+            zeroSquare.intensity += intensityAdd;
 
             int[] path = getPathToSquare(lat, lng);
-            foreach (int i in path)
+            int index;
+            for (int i = 0; i < path.Length - 1; i++)
             {
-                if (NetSquare.children[i] == null)
+                index = path[i];
+                if (netSquare.children[index] == null)
                 {
-                    NetSquare.children[i] = new NetSquare(NetSquare, i, 0);
+                    netSquare.children[index] = new NetSquare(netSquare, index, 0);
                     totalSquaresCount++;
                 }
 
-                NetSquare = NetSquare.children[i];
-                NetSquare.intensity += vector.length;
+                netSquare = netSquare.children[index];
+                netSquare.intensity += intensityAdd;
             }
 
-            //NetSquare.vectors.Add(vector);
+            index = path.Last();
+            if (netSquare.children[index] == null)
+            {
+                NetSquareCPData square = new NetSquareCPData(netSquare, index, 0);
+                netSquare.children[index] = square;
+                totalSquaresCount++;
+                return square;
+            }
+            else
+            {
+                NetSquareCPData square = (NetSquareCPData)netSquare.children[index];
+                square.intensity += intensityAdd;
+                return square;
+            }
         }
 
         //GetSquare functions

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF2.Classes.DataTypes
 {
-    public struct CPVector
+    public class CPVector
     {        
         public double X, Y, Z;
         public double length;        
@@ -30,20 +30,13 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         }
     }
 
-    public struct CPVectorAbs
+    public class CPVectorAbs : CPVector
     {        
-        public long absoluteTime;
-        public double X, Y, Z;
-        public double length;
+        public long absoluteTime;        
 
-        public CPVectorAbs(long absoluteTime, double X, double Y, double Z)
+        public CPVectorAbs(double X, double Y, double Z, long absoluteTime) : base (X, Y, Z)
         {            
-            this.absoluteTime = absoluteTime;
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
-
-            length = Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
+            this.absoluteTime = absoluteTime;            
         }
 
         public static CPVectorAbs[] fromArray(DataTuplya[] array, long absoluteTime)
@@ -51,9 +44,25 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             CPVectorAbs[] output = new CPVectorAbs[array.Length];
             Parallel.For(0, array.Length, i =>
             {
-                output[i] = new CPVectorAbs(absoluteTime + array[i].timeOffset, array[i].values[0], array[i].values[1], array[i].values[2]);
+                output[i] = new CPVectorAbs(array[i].values[0], array[i].values[1], array[i].values[2], absoluteTime + array[i].timeOffset);
             });
             return output;
         }
     }    
+
+    public class CPVectorAbsGeo : CPVectorAbs
+    {
+        public PointLatLng startP, endP;
+        public double widthLng, heightLat, lengthMeters;
+
+        public CPVectorAbsGeo(double X, double Y, double Z, 
+            long absoluteTime, PointLatLng startP, PointLatLng endP) : base(X,Y,Z,absoluteTime)
+        {
+            this.startP = startP;
+            this.endP = endP;
+            widthLng = endP.Lng - startP.Lng;
+            heightLat = endP.Lat - startP.Lat;
+            lengthMeters = Math.Sqrt(widthLng * widthLng + heightLat * heightLat);
+        }
+    }
 }

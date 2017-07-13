@@ -71,6 +71,23 @@ namespace CarsAndPitsWPF2.Classes.Nets
             CPVectorAbs[] vectorsAbs = CPVectorAbs.fromArray(rawData.data, rawData.startTime);
             foreach (CPVectorAbs vectorAbs in vectorsAbs)
                 sequense.addVector(vectorAbs);
+        }      
+        
+        public void putData(CPVectorAbs vectorAbs, string deviceId, SensorType sensor)
+        {
+            if (!data.ContainsKey(deviceId))
+            {
+                Dictionary<SensorType, CPDataSequence> dictionary = new Dictionary<SensorType, CPDataSequence>()
+                {
+                    { sensor, new CPDataSequence(sensor, vectorAbs.absoluteTime) }
+                };
+                data.Add(deviceId, dictionary);
+            }
+            else if (!data[deviceId].ContainsKey(sensor))
+                data[deviceId].Add(sensor, new CPDataSequence(sensor, vectorAbs.absoluteTime));
+
+            CPDataSequence sequense = data[deviceId][sensor];
+            sequense.addVector(vectorAbs);
         }        
     }
 }
