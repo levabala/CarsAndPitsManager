@@ -68,11 +68,9 @@ namespace CarsAndPitsWPF2.Classes.Nets
                 data[rawData.deviceId].Add(rawData.sensor, new CPDataSequence(rawData.sensor, rawData.startTime));
 
             CPDataSequence sequense = data[rawData.deviceId][rawData.sensor];
-            CPVector[] vectors = CPVector.fromArray(rawData.data);
-            Parallel.ForEach(vectors, vector =>
-            {
-                //sequense.addVector(vector, )
-            });
+            CPVectorAbs[] vectorsAbs = CPVectorAbs.fromArray(rawData.data, rawData.startTime);
+            foreach (CPVectorAbs vectorAbs in vectorsAbs)
+                sequense.addVector(vectorAbs);
         }        
     }
 }

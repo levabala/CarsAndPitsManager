@@ -21,33 +21,39 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             length = Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
         }
 
-        public static CPVector[] fromArray(DataTuplya[] array)
+        public CPVector(CPVectorAbs vectorAbs)
         {
-            CPVector[] output = new CPVector[array.Length];
-            Parallel.For(0, array.Length-1, i =>
-            {
-                output[i] = new CPVector(array[i].values[0], array[i].values[1], array[i].values[2]);
-            });
-            return output;
+            X = vectorAbs.X;
+            Y = vectorAbs.Y;
+            Z = vectorAbs.Z;
+            length = vectorAbs.length;
         }
     }
 
     public struct CPVectorAbs
-    {
-        public PointLatLng coordinate;
+    {        
         public long absoluteTime;
         public double X, Y, Z;
         public double length;
 
-        public CPVectorAbs(PointLatLng coordinate, long absoluteTime, double X, double Y, double Z)
-        {
-            this.coordinate = coordinate;
+        public CPVectorAbs(long absoluteTime, double X, double Y, double Z)
+        {            
             this.absoluteTime = absoluteTime;
             this.X = X;
             this.Y = Y;
             this.Z = Z;
 
             length = Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
+        }
+
+        public static CPVectorAbs[] fromArray(DataTuplya[] array, long absoluteTime)
+        {
+            CPVectorAbs[] output = new CPVectorAbs[array.Length];
+            Parallel.For(0, array.Length, i =>
+            {
+                output[i] = new CPVectorAbs(absoluteTime + array[i].timeOffset, array[i].values[0], array[i].values[1], array[i].values[2]);
+            });
+            return output;
         }
     }    
 }

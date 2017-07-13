@@ -86,7 +86,8 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
     {
         public SensorType sensorType;
         public List<Sequence> sequences;
-        public long startTime;        
+        public long startTime;
+        public long endTime;
         public double maxDeviationPerc;
 
         private Sequence currSequence;
@@ -107,8 +108,23 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             if (!normalDeviation)
             {
                 addSeq();
-                addVector(vector, absoluteTime);
+                currSequence.addVector(vector, absoluteTime);
+                //addVector(vector, absoluteTime);
             }
+            endTime = currSequence.endTime;
+        }
+
+        public void addVector(CPVectorAbs vectorAbs)
+        {
+            CPVector vector = new CPVector(vectorAbs);
+            bool normalDeviation = currSequence.addVector(vector, vectorAbs.absoluteTime);
+            if (!normalDeviation)
+            {
+                addSeq();
+                currSequence.addVector(vector, vectorAbs.absoluteTime);
+                //addVector(vector, vectorAbs.absoluteTime);
+            }
+            endTime = currSequence.endTime;
         }
         
         public CPVector? getVector(long absoluteTime)
@@ -123,7 +139,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         private int getSeqIndex(long absoluteTime)
         {
             //non-binary search :(
-            if (absoluteTime < sequences[0].startTime || absoluteTime > sequences.Last().endTime)
+            if (absoluteTime < startTime || absoluteTime > endTime)
                 return -1;
             
             for (int i = 0; i < sequences.Count; i++)
