@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Device.Location;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,58 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             }
 
             this.geoData = geoData.ToArray();
+        }
+
+        private static Dictionary<SensorType, CPRawDataGeo> fromDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+                throw new DirectoryNotFoundException("No such directory!");
+
+            Dictionary<SensorType, CPRawDataGeo> data = new Dictionary<SensorType, CPRawDataGeo>();
+            
+            string[] files = Directory.GetFiles(path);
+
+            int GPSIndex = Array.FindIndex(files, (str) => { return SensorType.fromPath(str) == SensorType.GPS; });
+            if (GPSIndex == -1)
+                return new Dictionary<SensorType, CPRawDataGeo>();
+
+            CPRawData dataGeo = new CPRawData(files[GPSIndex]);
+            files[GPSIndex] = null;
+            foreach (string p in files)
+            {
+                if (p == null)
+                    continue;
+                CPRawDataGeo cpd = new CPRawDataGeo(new CPRawData(p), dataGeo);
+                data.Add(cpd.sensor, cpd);
+            }
+
+            return data;
+        }
+
+        private static Dictionary<SensorType, CPRawDataGeo>[] fromDirOfDirs(string path)
+        {
+            if (!Directory.Exists(path))
+                throw new DirectoryNotFoundException("No such directory!");
+
+            List<Dictionary<SensorType, CPRawDataGeo>> output = new List<Dictionary<SensorType, CPRawDataGeo>>();
+
+            foreach (string folder in Directory.GetDirectories(path))
+                if (!Directory.Exists(folder))
+                    output.Add(fromDirectory(folder));
+            return output.ToArray();
+        }
+
+        public static Dictionary<SensorType, CPRawDataGeo>[] getByPath(string path, ParseMode parseMode)
+        {
+            switch (parseMode)
+            {
+                case ParseMode.FolderOfFiles:
+                    return new Dictionary<SensorType, CPRawDataGeo>[] { fromDirectory(path) };
+                case ParseMode.FolderOfFolders:
+                    return fromDirOfDirs(path);
+                default:
+                    return new Dictionary<SensorType, CPRawDataGeo>[] { };
+            }
         }
 
         private double lineIntr(double x1, double x2, double y1, double y2, double x)

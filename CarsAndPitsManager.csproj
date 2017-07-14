@@ -34,6 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GMap.NET.Core, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\CarsAndPitsWPF\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GMap.NET.WindowsPresentation, Version=1.7.5.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\CarsAndPitsWPF\packages\GMap.NET.Presentation.1.7.5\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
+    </Reference>
+    <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL">
+      <HintPath>..\CarsAndPitsWPF\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Device" />
@@ -64,7 +73,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Classes\CPManager.cs" />
-    <Compile Include="Classes\CPVisualizer.cs" />
+    <Compile Include="Classes\DataTypes\RectGeo.cs" />
+    <Compile Include="Classes\Visualizers\CPNetVisualizer.cs" />
     <Compile Include="Classes\DataProcessors\RawDataGetter.cs" />
     <Compile Include="Classes\DataTypes\CPDataSequence.cs" />
     <Compile Include="Classes\DataTypes\CPRawDataGeo.cs" />
@@ -73,6 +83,7 @@
     <Compile Include="Classes\Nets\Net.cs" />
     <Compile Include="Classes\Nets\NetSquare.cs" />
     <Compile Include="Classes\DataTypes\PointGeo.cs" />
+    <Compile Include="Classes\Visualizers\CPNetVisualizerGMap.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -96,6 +107,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -104,8 +116,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\Other\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

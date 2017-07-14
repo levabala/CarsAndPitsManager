@@ -1,4 +1,8 @@
-﻿using System;
+﻿using CarsAndPitsWPF2.Classes;
+using CarsAndPitsWPF2.Classes.DataTypes;
+using CarsAndPitsWPF2.Classes.Nets;
+using Ookii.Dialogs.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +26,34 @@ namespace CarsAndPitsWPF2
     {
         public MainWindow()
         {
-            InitializeComponent(); 
+            InitializeComponent();
+
+            CPManager manager = new CPManager(new Net());
+
+            String folder = selectFolder();
+            if (folder == "null")
+                return;
+
+            Dictionary<SensorType, CPRawDataGeo>[] data = CPRawDataGeo.getByPath(folder, ParseMode.FolderOfFiles);
+            List<CPRawDataGeo> list = new List<CPRawDataGeo>();
+            foreach (Dictionary<SensorType, CPRawDataGeo> dict in data)
+                foreach (KeyValuePair<SensorType, CPRawDataGeo> pair in dict)
+                    list.Add(pair.Value);
+
+            manager.addData(list.ToArray());
         }
+
+        private string selectFolder()
+        {
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
+            if (dialog.ShowDialog().Value)
+            {
+                Properties.Settings.Default.LastFolder = dialog.SelectedPath;
+                Properties.Settings.Default.Save();
+                return dialog.SelectedPath;
+            }
+            else return "null";
+        }
+
     }
 }

@@ -40,6 +40,23 @@ namespace CarsAndPitsWPF2.Classes.Nets
             putToSquareTree(lat, lng, vectorAbs, deviceId, sensor);            
             totalValuesContains++;
         }
+        
+        public void putVector(CPVectorAbsGeo vectorAbsGeo, string deviceId, SensorType sensor)
+        {
+            putVector(vectorAbsGeo.startP.Lat, vectorAbsGeo.startP.Lng, vectorAbsGeo, deviceId, sensor);
+        }
+
+        public void putVector(CPVectorAbsGeo[] vectorsAbsGeo, string deviceId, SensorType sensor)
+        {
+            foreach (CPVectorAbsGeo vectorAbsGeo in vectorsAbsGeo)
+                putVector(vectorAbsGeo.startP.Lat, vectorAbsGeo.startP.Lng, vectorAbsGeo, deviceId, sensor);
+        }
+
+        public void putData(CPRawDataGeo data)
+        {
+            CPVectorAbsGeo[] vectorsAbsGeo = CPVectorAbsGeo.fromArray(data.geoData, data.startTime);
+            putVector(vectorsAbsGeo, data.deviceId, data.sensor);
+        }
 
         private void putToSquareTree(double lat, double lng, 
             CPVectorAbs vectorAbs, string deviceId, SensorType sensor)

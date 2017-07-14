@@ -31,7 +31,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             if (!File.Exists(path))
                 throw new FileNotFoundException();
 
-            SensorType type = SensorType.fromString(Path.GetFileNameWithoutExtension(path));
+            SensorType type = SensorType.fromPath(path);
             if (type == SensorType.UNKNOWN)
                 throw new FileFormatException("Filename isn't valid!");
             sensor = type;
@@ -70,9 +70,9 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             });
 
             this.data = data;
-        }
+        }        
 
-        public static Dictionary<SensorType, CPRawData> fromDirectory(string path)
+        private static Dictionary<SensorType, CPRawData> fromDirectory(string path)
         {
             if (!Directory.Exists(path))
                 throw new DirectoryNotFoundException("No such directory!");
@@ -87,6 +87,37 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
 
             return data;
         }
+
+        private static Dictionary<SensorType, CPRawData>[] fromDirOfDirs(string path)
+        {
+            if (!Directory.Exists(path))
+                throw new DirectoryNotFoundException("No such directory!");
+
+            List<Dictionary<SensorType, CPRawData>> output = new List<Dictionary<SensorType, CPRawData>>();
+
+            foreach (string folder in Directory.GetDirectories(path))
+                if (!Directory.Exists(folder))
+                    output.Add(fromDirectory(folder));
+            return output.ToArray();
+        }
+
+        public static Dictionary<SensorType, CPRawData>[] getByPath(string path, ParseMode parseMode)
+        {
+            switch (parseMode)
+            {                
+                case ParseMode.FolderOfFiles:
+                    return new Dictionary<SensorType, CPRawData>[] { fromDirectory(path) };
+                case ParseMode.FolderOfFolders:
+                    return fromDirOfDirs(path);
+                default:
+                    return new Dictionary<SensorType, CPRawData>[] {};
+            }
+        }                
+    }
+
+    public enum ParseMode
+    {
+        FolderOfFiles, FolderOfFolders
     }
 
     public class DataTuplya
@@ -135,11 +166,16 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             ACCELEROMETER,MAGNETIC_FIELD,GYROSCOPE,GRAVITY,AMBIENT_TEMPERATURE,LIGHT,LINEAR_ACCELERATION,ORIENTATION,PRESSURE,
             PROXIMITY,RELATIVE_HUMIDITY,ROTATION_VECTOR,TEMPERATURE,GAME_ROTATION_VECTOR,GEOMAGNETIC_ROTATION_VECTOR,HEART_BEAT,
             HEART_RATE,SIGNIFICANT_MOTION,STATIONARY_DETECT,STEP_COUNTER,STEP_DETECTOR,GPS,UNKNOWN
-        };
+        };        
 
         private SensorType(string name)
         {
             this.name = name;
+        }
+
+        public static SensorType fromPath(string path)
+        {
+            return fromString(Path.GetFileNameWithoutExtension(path));
         }
 
         public static SensorType fromString(string str)

@@ -16,7 +16,7 @@ namespace CarsAndPitsWPF2.Classes.DataProcessors
             ProgressChangedEventHandler processHandler,
             RunWorkerCompletedEventHandler completeHandler)
         {
-            List<string> directories = new List<string>();
+            /*List<string> directories = new List<string>();
             List<string> files = new List<string>();
             foreach (string path in Directory.GetDirectories(folder))
             {
@@ -35,7 +35,7 @@ namespace CarsAndPitsWPF2.Classes.DataProcessors
                 double i = 0;
                 foreach (string path in directories)
                 {
-                    dictionary = CPRawData.fromDirectory(path);
+                    dictionary = CPRawData.getByPath(path, ParseMode.FolderOfFiles);
                     if (dictionary.ContainsKey(SensorType.ACCELEROMETER) && dictionary.ContainsKey(SensorType.GPS))
                         data.Add(new CPRawDataGeo(dictionary[SensorType.ACCELEROMETER], dictionary[SensorType.GPS]));
                     i++;
@@ -49,7 +49,7 @@ namespace CarsAndPitsWPF2.Classes.DataProcessors
             };
             bw.ProgressChanged += processHandler;
             bw.RunWorkerCompleted += completeHandler;
-            bw.RunWorkerAsync();
+            bw.RunWorkerAsync();*/
         }
     }
 }
