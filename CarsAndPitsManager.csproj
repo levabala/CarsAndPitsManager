@@ -75,7 +75,6 @@
     <Compile Include="Classes\CPManager.cs" />
     <Compile Include="Classes\DataTypes\RectGeo.cs" />
     <Compile Include="Classes\Visualizers\CPNetVisualizer.cs" />
-    <Compile Include="Classes\DataProcessors\RawDataGetter.cs" />
     <Compile Include="Classes\DataTypes\CPDataSequence.cs" />
     <Compile Include="Classes\DataTypes\CPRawDataGeo.cs" />
     <Compile Include="Classes\DataTypes\CPRawData.cs" />
@@ -116,6 +115,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Classes\DataProcessors\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

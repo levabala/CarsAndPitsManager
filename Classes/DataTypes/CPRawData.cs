@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,11 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         public DataTuplya[] data;
         public SensorType sensor;
 
+        public CPRawData()
+        {
+
+        }
+
         public CPRawData(long startTime, string deviceId, DataTuplya[] data, SensorType sensor)
         {
             this.startTime = startTime;
@@ -24,7 +30,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             this.data = data;
             this.sensor = sensor;
             totalValueAbs = 0;
-        }
+        }        
 
         public CPRawData(string path)
         {
@@ -88,6 +94,25 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             return data;
         }
 
+        private static Dictionary<SensorType, CPRawData> fromDirectory(string path, Action<double> progressCallback)
+        {
+            if (!Directory.Exists(path))
+                throw new DirectoryNotFoundException("No such directory!");
+
+            Dictionary<SensorType, CPRawData> data = new Dictionary<SensorType, CPRawData>();
+            string[] files = Directory.GetFiles(path);
+            int i = 0;
+            foreach (string p in files)
+            {
+                CPRawData cpd = new CPRawData(p);
+                data.Add(cpd.sensor, cpd);
+                i++;
+                progressCallback(i / files.Length);
+            }
+
+            return data;
+        }
+
         private static Dictionary<SensorType, CPRawData>[] fromDirOfDirs(string path)
         {
             if (!Directory.Exists(path))
@@ -98,6 +123,27 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             foreach (string folder in Directory.GetDirectories(path))
                 if (!Directory.Exists(folder))
                     output.Add(fromDirectory(folder));
+            return output.ToArray();
+        }
+
+        private static Dictionary<SensorType, CPRawData>[] fromDirOfDirs(
+            string path, 
+            Action<double> progressCallback)
+        {
+            if (!Directory.Exists(path))
+                throw new DirectoryNotFoundException("No such directory!");
+
+            List<Dictionary<SensorType, CPRawData>> output = new List<Dictionary<SensorType, CPRawData>>();
+
+            int i = 0;
+            string[] dirs = Directory.GetDirectories(path);
+            foreach (string folder in dirs)
+            {
+                i++;
+                if (!Directory.Exists(folder))
+                    output.Add(fromDirectory(folder));
+                progressCallback(i / dirs.Length);
+            }
             return output.ToArray();
         }
 
@@ -112,7 +158,43 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
                 default:
                     return new Dictionary<SensorType, CPRawData>[] {};
             }
-        }                
+        }
+
+        public static Dictionary<SensorType, CPRawData>[] getByPath(
+            string path, 
+            ParseMode parseMode,
+            Action<double> progressCallback)
+        {
+            switch (parseMode)
+            {
+                case ParseMode.FolderOfFiles:
+                    return new Dictionary<SensorType, CPRawData>[] { fromDirectory(path, progressCallback) };
+                case ParseMode.FolderOfFolders:
+                    return fromDirOfDirs(path, progressCallback);
+                default:
+                    return new Dictionary<SensorType, CPRawData>[] { };
+            }
+        }
+
+        public static void getByPath(string path, ParseMode parseMode, 
+            ref Dictionary<SensorType, CPRawData>[] dictionaryToFill,
+            ProgressChangedEventHandler processHandler,
+            RunWorkerCompletedEventHandler completeHandler)
+        {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerReportsProgress = true;
+            bw.DoWork += (sender, e) =>
+            {
+                Action<double> callback = (progress) =>
+                {
+                    bw.ReportProgress((int)(progress * 100));
+                };
+                getByPath(path, parseMode, callback);
+            };
+            bw.ProgressChanged += processHandler;
+            bw.RunWorkerCompleted += completeHandler;
+            bw.RunWorkerAsync();
+        }        
     }
 
     public enum ParseMode

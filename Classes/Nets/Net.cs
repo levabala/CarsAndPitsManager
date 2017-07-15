@@ -54,7 +54,7 @@ namespace CarsAndPitsWPF2.Classes.Nets
 
         public void putData(CPRawDataGeo data)
         {
-            CPVectorAbsGeo[] vectorsAbsGeo = CPVectorAbsGeo.fromArray(data.geoData, data.startTime);
+            CPVectorAbsGeo[] vectorsAbsGeo = CPVectorAbsGeo.fromArray(data.data, data.startTime);
             putVector(vectorsAbsGeo, data.deviceId, data.sensor);
         }
 

@@ -34,10 +34,10 @@ namespace CarsAndPitsWPF2
             if (folder == "null")
                 return;
 
-            Dictionary<SensorType, CPRawDataGeo>[] data = CPRawDataGeo.getByPath(folder, ParseMode.FolderOfFiles);
-            List<CPRawDataGeo> list = new List<CPRawDataGeo>();
-            foreach (Dictionary<SensorType, CPRawDataGeo> dict in data)
-                foreach (KeyValuePair<SensorType, CPRawDataGeo> pair in dict)
+            Dictionary<SensorType, CPRawData>[] data = CPRawData.getByPath(folder, ParseMode.FolderOfFiles);
+            List<CPRawData> list = new List<CPRawData>();
+            foreach (Dictionary<SensorType, CPRawData> dict in data)
+                foreach (KeyValuePair<SensorType, CPRawData> pair in dict)
                     list.Add(pair.Value);
 
             manager.addData(list.ToArray());
