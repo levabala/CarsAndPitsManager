@@ -65,13 +65,14 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
         }
 
         public static CPVectorAbsGeo[] fromArray(DataTuplyaGeo[] array, long absoluteTime)
-        {
+        {            
             CPVectorAbsGeo[] output = new CPVectorAbsGeo[array.Length];
+            if (array.Length < 2) return output;
 
             output[0] = new CPVectorAbsGeo(
-                    array[0].values[0], array[0].values[1],
-                    array[0].values[2], absoluteTime + array[0].timeOffset,
-                    (PointGeo)array[0].coordinate, 0, 0, 0);
+                array[0].values[0], array[0].values[1],
+                array[0].values[2], absoluteTime + array[0].timeOffset,
+                (PointGeo)array[0].coordinate, 0, 0, 0);
 
             Parallel.For(1, array.Length, i =>
             {

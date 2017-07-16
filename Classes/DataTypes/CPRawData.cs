@@ -121,7 +121,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             List<Dictionary<SensorType, CPRawData>> output = new List<Dictionary<SensorType, CPRawData>>();
 
             foreach (string folder in Directory.GetDirectories(path))
-                if (!Directory.Exists(folder))
+                if (Directory.Exists(folder))
                     output.Add(fromDirectory(folder));
             return output.ToArray();
         }
@@ -140,7 +140,7 @@ namespace CarsAndPitsWPF2.Classes.DataTypes
             foreach (string folder in dirs)
             {
                 i++;
-                if (!Directory.Exists(folder))
+                if (Directory.Exists(folder))
                     output.Add(fromDirectory(folder));
                 progressCallback(i / dirs.Length);
             }

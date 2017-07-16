@@ -1,9 +1,11 @@
 ﻿using CarsAndPitsWPF2.Classes;
 using CarsAndPitsWPF2.Classes.DataTypes;
 using CarsAndPitsWPF2.Classes.Nets;
+using CarsAndPitsWPF2.Classes.Visualizers;
 using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,22 +28,72 @@ namespace CarsAndPitsWPF2
     {
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
+            MyWindow.Loaded += MyWindow_Loaded;            
+        }
+
+        private void MyWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            MyWindow.KeyDown += MyWindow_KeyDown;
 
             CPManager manager = new CPManager(new Net());
-
             String folder = selectFolder();
             if (folder == "null")
                 return;
+            
+            CPRawDataGeo.getByPath(
+                folder, 
+                ParseMode.FolderOfFolders,                
+                (s,o) =>
+                {
+                    //progress changed
+                    updateProgress(o.ProgressPercentage);
+                },
+                (s,o) =>
+                {
+                    //end
+                    Dictionary<SensorType, CPRawDataGeo>[] data = (Dictionary<SensorType, CPRawDataGeo>[])o.Result;
 
-            Dictionary<SensorType, CPRawData>[] data = CPRawData.getByPath(folder, ParseMode.FolderOfFiles);
-            List<CPRawData> list = new List<CPRawData>();
-            foreach (Dictionary<SensorType, CPRawData> dict in data)
-                foreach (KeyValuePair<SensorType, CPRawData> pair in dict)
-                    list.Add(pair.Value);
+                    List<CPRawDataGeo> list = new List<CPRawDataGeo>();
+                    foreach (Dictionary<SensorType, CPRawDataGeo> dict in data)
+                        foreach (KeyValuePair<SensorType, CPRawDataGeo> pair in dict)
+                            if (pair.Value.geoData.Length > 0 && pair.Value.geoData[0].values.Length >= 3)
+                                list.Add(pair.Value);
 
-            manager.addData(list.ToArray());
+                    updateProgress(0);
+                    manager.addData(
+                        list.ToArray(),
+                        (ss, oo) =>
+                        {
+                            //progress changed
+                            updateProgress(oo.ProgressPercentage);
+                        },
+                        (ss, oo) =>
+                        {
+                            manager.addVisualizer(MyVisualizer);
+                            Title = "Done";
+                            updateProgress(100);
+                        });
+                    
+                });            
         }
+
+        private void updateProgress(double percentage)
+        {
+            LoadProgressBar.Value = percentage;
+        }
+
+        private void MyWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Escape:
+                    Application.Current.Shutdown();
+                    break;
+            }
+        }
+
+        public object CPVisualizer { get; private set; }
 
         private string selectFolder()
         {
